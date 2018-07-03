@@ -1,7 +1,6 @@
 source("initialization")
 
-#' Initialize graph
-#' @param g a graph
+# Initialize graph
 trajecten <- read.csv("trajecten.csv",stringsAsFactors = FALSE)
 stations <-  read.csv("trajecten_stations.csv",stringsAsFactors = FALSE)
 
