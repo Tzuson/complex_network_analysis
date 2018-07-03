@@ -2,16 +2,17 @@ source("initialization")
 
 #' Initialize graph
 #' @param g a graph
-trajecten <- read.csv("02tidy/trajecten.csv",stringsAsFactors = FALSE)
-stations <-  read.csv("02tidy/trajecten_stations.csv",stringsAsFactors = FALSE)
+trajecten <- read.csv("trajecten.csv",stringsAsFactors = FALSE)
+stations <-  read.csv("trajecten_stations.csv",stringsAsFactors = FALSE)
 
 g <- graph_from_data_frame(trajecten,directed=FALSE,vertices=stations)
 L <- components(g)
 
 
-# Plot graph of network
-# Input: vector of data on nodes
-# Output: pdf of plot
+#' Plot graph of nsnet
+#' 
+#' @param data Data on nodes
+#' @return A pdf with a plot of nsnet
 nsnet_plot <- function(data){
   nsrblauw <- "#003373"
   nsgeel <- "#f7d417"
