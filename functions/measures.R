@@ -1,5 +1,5 @@
-source("initialization")
-source("functions/functions")
+source("initialization.R")
+source("functions/functions.R")
 
 # Assumption: g a simple, connected, undirected and unweighted graph
 
@@ -28,7 +28,7 @@ global_efficiency <- function(g){
 local_efficiency <- function(g){
   sapply(V(g),function(node){
     h <- induced_subgraph(g,c(neighbors(g,node)))
-    efficiency(h)
+    global_efficiency(h)
   })
 }# local_efficiency(g)
 
@@ -57,7 +57,7 @@ vulnerability_nodes <- function(g, performance){
 vulnerability_edges <- function(g, performance){
   edges <- E(g)
   sapply(seq_along(edges), function(i){
-    h <- induced_subgraph(g, edges[-i])
+    h <- subgraph.edges(g, edges[-i], delete.vertices = FALSE)
     1-performance(h)/performance(g)
   })
 }# vulnerability_edges(g, performance)
@@ -71,7 +71,7 @@ vulnerability_edges <- function(g, performance){
 #' The topological information content is defined as
 #' the logarithm of the size of the automorphism group to the base of 2.
 information_content <- function(g){
-  return(log2(as.numeric(igraph::automorphisms(g)$group_size)))
+  log2(as.numeric(igraph::automorphisms(g)$group_size))
 }# information_content(g)
 
 
@@ -112,6 +112,7 @@ local_efficacy <- function(g){
 
 
 #' Return a vector of graph characterization
+#' 
 #' @param g A graph
 #' @param performance A function
 #' @return Graph characterization numbers (vector)
