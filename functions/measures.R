@@ -7,96 +7,36 @@ source("functions/functions.R")
 #' Efficiency of a graph, according to Latora (2001)
 #' 
 #' @param g A graph
+#' @param directed A boolean
 #' @return The global efficiency (number)
-global_efficiency <- function(g){
+global_efficiency <- function(g, directed){
   n <- length(V(g))
-  if (n >= 2){
-    nd <- igraph::distance_table(g)$res
+  if (n >= 2 && directed){
+    nd <- igraph::distance_table(g, directed)$res
+    d <- seq_along(nd)
+    return(sum(nd/d)/(n*(n-1)))
+  } else if (n >= 2){
+    nd <- igraph::distance_table(g, directed)$res
     d <- seq_along(nd)
     return(2*sum(nd/d)/(n*(n-1)))
-  }# if (n>0)
+  }# if (n >= 2 && directed)
   else {
     return(0)
   }# else
-}# global_efficiency(g)
+}# global_efficiency(g, directed)
 
 
 #' Local efficiency of the nodes of a graph
 #' 
 #' @param g A graph
+#' @param directed A boolean
 #' @return The local efficiencies of nodes (vector)
-local_efficiency <- function(g){
+local_efficiency <- function(g, directed){
   sapply(V(g),function(node){
     h <- induced_subgraph(g,c(neighbors(g,node)))
-    global_efficiency(h)
+    global_efficiency(h, directed)
   })
-}# local_efficiency(g)
-
-
-#' Network vulnerability per node, according to Gol'dshtein (2004) and 
-#' Latora et al (2005).
-#' 
-#' @param g A graph
-#' @param performance A function
-#' @return The vulnerabilities of nodes (vector)
-vulnerability_nodes <- function(g, performance){
-  nodes <- V(g)
-  sapply(seq_along(nodes), function(i){
-    h <- induced_subgraph(g, nodes[-i])
-    1-performance(h)/performance(g)
-  })
-}# vulnerability_nodes(g, performance)
-
-
-#' Network vulnerability per edge, according to Gol'dshtein (2004) and 
-#' Latora et al (2005).
-#' 
-#' @param g A graph
-#' @param performance A function
-#' @return The vulnerabilities of edges (vector)
-vulnerability_edges <- function(g, performance){
-  edges <- E(g)
-  sapply(seq_along(edges), function(i){
-    h <- subgraph.edges(g, edges[-i], delete.vertices = FALSE)
-    1-performance(h)/performance(g)
-  })
-}# vulnerability_edges(g, performance)
-
-
-#' Network vulnerability for a list of nodes and edges, according to Gol'dshtein (2004) and 
-#' Latora et al (2005).
-#' 
-#' @param g A graph
-#' @param nodes A list of names of new nodes
-#' @param edges A list of edges
-#' @param performance A function
-#' @return The vulnerability due to the removed nodes and edges
-#' @details 
-#' For the edges list, we have edges[1] as the start and edges[2] as the end of the first edge,
-#' then edges[3] as the start and edges[4] as the end of the second edge.
-vulnerability <- function(g, nodes, edges, performance){
-  h <- delete.edges(g, edges)
-  h <- delete.vertices(h, nodes)
-  return(1-performance(h)/performance(g))
-}# vulnerability(g, nodes, edges, performance)
-
-
-#' Network improvement for a list of nodes and edges, according to Gol'dshtein (2004) and 
-#' Latora et al (2005).
-#' 
-#' @param g A graph
-#' @param nodes A list of names of new nodes
-#' @param edges A list of edges
-#' @param performance A function
-#' @return The improvement due to added nodes and edges
-#' @details 
-#' For the edges list, we have edges[1] as the start and edges[2] as the end of the first edge,
-#' then edges[3] as the start and edges[4] as the end of the second edge.
-improvement <- function(g, nodes, edges, performance){
-  h <- add.vertices(g, length(nodes), name=nodes)
-  h <- add.edges(h, edges)
-  return(performance(h)/performance(g)-1)
-}# improvement(g, nodes, edges, performance)
+}# local_efficiency(g, directed)
 
 
 #' Topological information content
@@ -150,19 +90,20 @@ local_efficacy <- function(g){
 #' Return a vector of graph characterization
 #' 
 #' @param g A graph
+#' @param directed A boolean
 #' @param performance A function
 #' @return Graph characterization numbers (vector)
 #' @details 
 #' The characterizations are: global and local efficiency, global and local efficacy,
 #' vulnerability of nodes and edges, and topological information content
-measures <- function(g,performance){
+measures <- function(g, directed, performance){
   c(
-    global_efficiency = global_efficiency(g)
-    , local_efficiency = mean(local_efficiency(g))
+    global_efficiency = global_efficiency(g, directed)
+    , local_efficiency = mean(local_efficiency(g, directed))
     #, global_efficacy = global_efficacy(g)
     #, local_efficacy  = mean(local_efficacy(g))
-    , vulnerability_nodes = max(vulnerability_nodes(g,performance))
-    , vulnerability_edges = max(vulnerability_edges(g,performance))
+    , vulnerability_nodes = max(vulnerability_nodes(g, directed, performance))
+    , vulnerability_edges = max(vulnerability_edges(g, directed, performance))
     , topological_information_content = information_content(g)
   )
 }# measures(g,performance)
