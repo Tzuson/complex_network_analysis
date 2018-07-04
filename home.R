@@ -9,14 +9,9 @@ source("functions/measures.R")
 
 #nsnet_plot(3*local_efficiency(nsnet))
 
-nodes <- vulnerability_nodes(nsnet, global_efficiency)
-edges <- vulnerability_edges(nsnet, global_efficiency)
+print(global_efficacy(nsnet))
+print(global_efficiency(nsnet))
+
+nsnet_plot(10*nodes, 10*edges)
 
 
-nsnet_plot(3*nodes, 3*edges)
-
-print(stations$naam[which.max(nodes)])
-print(trajecten$start[which.max(edges)])
-print(trajecten$stop[which.max(edges)])
-print(nodes[which.max(nodes)])
-print(edges[which.max(edges)])
