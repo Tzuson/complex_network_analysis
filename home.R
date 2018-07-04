@@ -2,6 +2,7 @@ source("initialization.R")
 source("data/nsnet.R")
 source("functions/functions.R")
 source("functions/measures.R")
+source("functions/tests.R")
 
 
 
