@@ -10,9 +10,10 @@ source("functions/functions.R")
 #' @return The vulnerabilities of nodes
 vulnerability_nodes <- function(g, performance){
   nodes <- V(g)
+  e <- performance(g)
   sapply(seq_along(nodes), function(i){
     h <- induced_subgraph(g, nodes[-i])
-    1-performance(h)/performance(g)
+    1-performance(h)/e
   })
 }# vulnerability_nodes(g, performance)
 
@@ -25,9 +26,10 @@ vulnerability_nodes <- function(g, performance){
 #' @return The vulnerabilities of edges
 vulnerability_edges <- function(g, performance){
   edges <- E(g)
+  e <- performance(g)
   sapply(seq_along(edges), function(i){
     h <- subgraph.edges(g, edges[-i], delete.vertices = FALSE)
-    1-performance(h)/performance(g)
+    1-performance(h)/e
   })
 }# vulnerability_edges(g, performance)
 
@@ -44,9 +46,10 @@ vulnerability_edges <- function(g, performance){
 #' For the edges list, we have edges[1] as the start and edges[2] as the end of the first edge,
 #' then edges[3] as the start and edges[4] as the end of the second edge.
 vulnerability <- function(g, nodes, edges, performance){
+  e <- performance(g)
   h <- delete.edges(g, edges)
   h <- delete.vertices(h, nodes)
-  return(1-performance(h)/performance(g))
+  return(1-performance(h)/e)
 }# vulnerability(g, nodes, edges, performance)
 
 
@@ -62,7 +65,8 @@ vulnerability <- function(g, nodes, edges, performance){
 #' For the edges list, we have edges[1] as the start and edges[2] as the end of the first edge,
 #' then edges[3] as the start and edges[4] as the end of the second edge.
 improvement <- function(g, nodes, edges, performance){
+  e <- performance(g)
   h <- add.vertices(g, length(nodes), name=nodes)
   h <- add.edges(h, edges)
-  return(performance(h)/performance(g)-1)
+  return(performance(h)/e-1)
 }# improvement(g, nodes, edges, performance)
