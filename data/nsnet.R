@@ -4,7 +4,7 @@ source("initialization.R")
 trajecten <- read.csv("data/trajecten.csv",stringsAsFactors = FALSE)
 stations <-  read.csv("data/trajecten_stations.csv",stringsAsFactors = FALSE)
 
-nsnet <- graph_from_data_frame(trajecten,directed=FALSE,vertices=stations)
+nsnet <- graph_from_data_frame(trajecten, directed=FALSE, vertices=stations)
 L <- components(g)
 
 
