@@ -1,25 +1,24 @@
 source("initialization.R")
 source("functions/functions.R")
 
-# Assumption: g a simple, connected, undirected and unweighted graph
+# Assumption: g a simple graph
 
 
 #' Efficiency of a graph, according to Latora (2001)
 #' 
 #' @param g A graph 
-#' @param directed A boolean
 #' @return The global efficiency (number)
-global_efficiency <- function(g, directed){
+global_efficiency <- function(g){
   n <- length(V(g))
-  if (n<1){
+  if (n<2){
     return(0)
-  }#if
+  }# if
   d <- distances(g, v=V(g), to=V(g), mode="out")
   for (i in seq(n)){
       d[i,i] <- Inf
   }# for
   return(sum(1/d)/(n*(n-1)))
-}# global_efficiency(g, directed)
+}# global_efficiency(g)
 
 
 #' Local efficiency of the nodes of a graph
@@ -27,12 +26,12 @@ global_efficiency <- function(g, directed){
 #' @param g A graph
 #' @param directed A boolean
 #' @return The local efficiencies of nodes (vector)
-local_efficiency <- function(g, directed){
+local_efficiency <- function(g){
   sapply(V(g),function(node){
     h <- induced_subgraph(g,c(neighbors(g,node)))
-    global_efficiency(h, directed)
+    global_efficiency(h)
   })
-}# local_efficiency(g, directed)
+}# local_efficiency(g)
 
 
 #' Topological information content
@@ -47,6 +46,7 @@ information_content <- function(g){
 }# information_content(g)
 
 
+
 #' Global efficacy of a graph
 #' 
 #' @param g A graph
@@ -56,18 +56,17 @@ information_content <- function(g){
 #' multiplied with the number of shortest paths, divided by n(n-1). 
 #' (van der Loo, 2018)
 global_efficacy <- function(g){
-  nodes <- seq_along(V(g))
-  n <- length(nodes)
-  out <- sapply(nodes[-1],function(i){
-    a <- sapply(seq_len(i-1), function(j){
-      L <- igraph::all_shortest_paths(g,from=i, to=j)
-      mu <- length(L$res)
-      len <- length(L$res[[1]])-1L
-      c(mu=mu,len=len)
-    })
-    sum(a[1,]/a[2,])
-  })
-  return(2*sum(out)/(n*(n-1)))
+  n <- length(V(g))
+  if (n<2){
+    return(0)
+  }# if
+  d <- distances(g, v=V(g), to=V(g), mode="out")
+  mu <- matrix(0, nrow=n, ncol=n)
+  for (i in seq(n)){
+    d[i,i] <- Inf
+    mu[i,] <- all_shortest_paths(g, from=i, to=V(g), mode="out")$nrgeo
+  }# for
+  return(sum(mu/d)/(n*(n-1)))
 }# global_efficacy(g)
 
 
@@ -92,14 +91,14 @@ local_efficacy <- function(g){
 #' @details 
 #' The characterizations are: global and local efficiency, global and local efficacy,
 #' vulnerability of nodes and edges, and topological information content
-measures <- function(g, directed, performance){
+measures <- function(g, performance){
   c(
-    global_efficiency = global_efficiency(g, directed)
-    , local_efficiency = mean(local_efficiency(g, directed))
-    #, global_efficacy = global_efficacy(g)
-    #, local_efficacy  = mean(local_efficacy(g))
-    , vulnerability_nodes = max(vulnerability_nodes(g, directed, performance))
-    , vulnerability_edges = max(vulnerability_edges(g, directed, performance))
+    global_efficiency = global_efficiency(g)
+    , local_efficiency = mean(local_efficiency(g))
+    , global_efficacy = global_efficacy(g)
+    , local_efficacy  = mean(local_efficacy(g))
+    , vulnerability_nodes = max(vulnerability_nodes(g, performance))
+    , vulnerability_edges = max(vulnerability_edges(g, performance))
     , topological_information_content = information_content(g)
   )
 }# measures(g,performance)
