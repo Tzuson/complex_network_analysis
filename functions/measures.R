@@ -6,23 +6,19 @@ source("functions/functions.R")
 
 #' Efficiency of a graph, according to Latora (2001)
 #' 
-#' @param g A graph
+#' @param g A graph 
 #' @param directed A boolean
 #' @return The global efficiency (number)
 global_efficiency <- function(g, directed){
   n <- length(V(g))
-  if (n >= 2 && directed){
-    nd <- igraph::distance_table(g, directed)$res
-    d <- seq_along(nd)
-    return(sum(nd/d)/(n*(n-1)))
-  } else if (n >= 2){
-    nd <- igraph::distance_table(g, directed)$res
-    d <- seq_along(nd)
-    return(2*sum(nd/d)/(n*(n-1)))
-  }# if (n >= 2 && directed)
-  else {
+  if (n<1){
     return(0)
-  }# else
+  }#if
+  d <- distances(g, v=V(g), to=V(g), mode="out")
+  for (i in seq(n)){
+      d[i,i] <- Inf
+  }# for
+  return(sum(1/d)/(n*(n-1)))
 }# global_efficiency(g, directed)
 
 
