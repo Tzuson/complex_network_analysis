@@ -8,3 +8,12 @@ source("initialization.R")
 harmonic <- function(n){
   sum(1/seq_len(n))
 }# harmonic(n)
+
+
+#' Shannon entropy
+#' 
+#' @param n A list of probabilities
+#' @return The Shannon entropy
+shannon_entropy <- function(n){
+  return(-sum(n*log2(n)))
+}# shannon_entropy(n)

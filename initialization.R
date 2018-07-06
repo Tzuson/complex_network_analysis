@@ -8,6 +8,7 @@ suppressPackageStartupMessages({
   library(stringdist)
   library(rvest)
   library(xml2)
+  library(Rcpp)
 })
 
 
