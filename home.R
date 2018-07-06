@@ -19,5 +19,5 @@ edges <- vulnerability_edges(nsnet, a, global_efficiency)
 nsnet_plot(10*nodes, 10*edges)
 
 
-measures(nsnet, matrix(1,nrow=v,ncol=v), global_efficiency)
+print(measures(nsnet, matrix(1,nrow=v,ncol=v), global_efficiency))
 

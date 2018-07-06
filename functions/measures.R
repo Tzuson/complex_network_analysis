@@ -15,10 +15,8 @@ global_efficiency <- function(g,l){
     return(0)
   }# if
   d <- distances(g, v=V(g), to=V(g), mode="out")
-  for (i in seq(n)){
-      d[i,i] <- Inf
-      l[i,i] <- Inf
-  }# for
+  diag(d) <- Inf
+  diag(l) <- Inf
   return(sum(1/d)/(sum(1/l)))
 }# global_efficiency(g,l)
 
