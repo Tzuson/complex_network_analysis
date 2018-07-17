@@ -64,9 +64,9 @@ global_efficacy <- function(g,l){
   }# if
   d <- distances(g, v=V(g), to=V(g), mode="out")
   mu <- matrix(0, nrow=n, ncol=n)
+  diag(d) <- Inf
+  diag(l) <- Inf
   for (i in seq(n)){
-    d[i,i] <- Inf
-    l[i,i] <- Inf
     mu[i,] <- all_shortest_paths(g, from=i, to=V(g), mode="out")$nrgeo
   }# for
   return(sum(mu/d)/(sum(1/l)))
@@ -100,8 +100,8 @@ measures <- function(g, l, performance){
   c(
     global_efficiency = global_efficiency(g,l)
     , local_efficiency = mean(local_efficiency(g,l))
-    , global_efficacy = global_efficacy(g,l)
-    , local_efficacy  = mean(local_efficacy(g,l))
+    #, global_efficacy = global_efficacy(g,l)
+    #, local_efficacy  = mean(local_efficacy(g,l))
     , vulnerability_nodes = max(vulnerability_nodes(g, l, performance))
     , vulnerability_edges = max(vulnerability_edges(g, l, performance))
     , topological_information_content = information_content(g)
