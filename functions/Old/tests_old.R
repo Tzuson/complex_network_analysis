@@ -5,39 +5,36 @@ source("functions/functions.R")
 #' Network vulnerability per node, according to Gol'dshtein (2004) and 
 #' Latora et al (2005).
 #' 
-#' @param cl A cluster of cores
 #' @param g A graph
 #' @param l A matrix
 #' @param performance A function
 #' @return The vulnerabilities of nodes
-vulnerability_nodesPar <- function(cl, g, l, performance){
+vulnerability_nodes <- function(g, l, performance){
   nodes <- V(g)
   e <- performance(g, l)
-  vul <- parSapply(cl,seq_along(nodes), function(i,g,l,e){
-    subg <- delete_vertices(g,c(i))
-    subl <- l[-i,-i]
+  sapply(seq_along(nodes), function(i){
+    subg <- induced_subgraph(g, nodes[-i])
+    subl <- l[V(subg),V(subg)]
     1-performance(subg,subl)/e
-  },g,l,e)
-  return(vul)
-}# vulnerability_nodesPar(cl, g, l, performance)
+  })
+}# vulnerability_nodes(g, l, performance)
 
 
 #' Network vulnerability per edge, according to Gol'dshtein (2004) and 
 #' Latora et al (2005).
 #' 
-#' @param cl A cluster
 #' @param g A graph
 #' @param l A matrix
 #' @param performance A function
 #' @return The vulnerabilities of edges
-vulnerability_edgesPar <- function(cl, g, l, performance){
+vulnerability_edges <- function(g, l, performance){
   edges <- E(g)
   e <- performance(g,l)
-  parSapply(cl,seq_along(edges), function(i,g,l,performance){
+  sapply(seq_along(edges), function(i){
     subg <- subgraph.edges(g, edges[-i], delete.vertices = FALSE)
     1-performance(subg,l)/e
-  },g,l,performance)
-}# vulnerability_edgesPar(cl, g, l, performance)
+  })
+}# vulnerability_edges(g, l, performance)
 
 
 #' Network vulnerability for a list of nodes and edges, according to Gol'dshtein (2004) and 
