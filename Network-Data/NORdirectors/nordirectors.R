@@ -23,6 +23,13 @@ nodes_nordirectors <- 1:vcount(nordirectors_uu) %>%
   write.csv("Network-Data/NORdirectors/cooked_data/nodes_nordirectors.csv",row.names=FALSE)
 
 # Adjusting list of edges
-edges_nordirectors <- filter(edges_nordirectors)
+edges_nordirectors <- filter(edges_nordirectors
+                             , FROM%in%as.integer(V(nordirectors_uu)$name)
+                             , TO%in%as.integer(V(nordirectors_uu)$name)) %>%
+  normalize_edgelist() %T>%
+  write.csv("Network-Data/NORdirectors/cooked_data/edges_nordirectors.csv",row.names=FALSE)
 
-write.csv("Network-Data/NORdirectors/cooked_data/edges_nordirectors.csv",row.names=FALSE)
+V(nordirectors_uu)$name <- 1:vcount(nordirectors_uu)
+
+
+

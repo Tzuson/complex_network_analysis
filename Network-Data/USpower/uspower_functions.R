@@ -60,6 +60,5 @@ plot_uspower <- function(net, nodes=NULL,mapping=function(x){x}, file_path="Netw
       geom_histogram(binwidth = (max(nodes)-min(nodes))/100)
     ggsave(filename=sprintf('%s_hist.pdf',file_name),plot=p,device="pdf",path=file_path)
   }# if
-  
 }# plot_uspower
 
