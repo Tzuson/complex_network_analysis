@@ -85,6 +85,13 @@ global_efficiency <- function(cl,g){
 #'   When omitted, the length between every pair of nodes is considerd 1, as
 #'   well as the length of every edge.
 #'
+#'   Note that if you use the length matrix, it is assumed the edges of the
+#'   graph are weighted. Otherwise, length 1 is assumed for every edge. Note
+#'   that for the global efficiency to be as Latora meant is, we need
+#'   d_ij>=l_ij, with equality if there is an edge between i and j. However,
+#'   this function is not restricted to this and accepts every d_ij and l_ij, as
+#'   long as sum(l_ij) > 0 (otherwise we divide by zero).
+#'
 #'   The transport matrix (or t matrix) gives the importance of pairs of nodes,
 #'   i.e. a t-value of 2, where all other values are 1 for the pair \code{[i,j]}
 #'   means the efficiency of the path between these two points is considered
@@ -130,7 +137,7 @@ global_efficiency <- function(cl,g){
 #' t6 <- matrix(c(0,0,0,1,0,0,0,1,0),nrow=3,ncol=3)
 #' global_efficiency_unpar(g3,l3,t6)
 #' # 1
-#' 
+#'
 #' @family global_efficiency, global_efficiency_unpar, local_efficiency
 global_efficiency_unpar <- function(g,l=NULL,t=NULL){
   # Efficiency is zero when n<2
