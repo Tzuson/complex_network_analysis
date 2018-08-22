@@ -18,35 +18,35 @@ uspower_uu <- read.csv("Network-Data/USpower/cooked_data/edges_uspower.csv") %>%
 cl <- start_cluster()
 
 # Calculating and plotting vulnerabilities
-nodes_uu <- as.data.frame(V(uspower_uu)$name) %>%
+vul_ge_uspower_uu <- as.data.frame(V(uspower_uu)$name) %>%
   (.$VULNERABILITY <- vulnerability_nodes(cl,uspower_uu,performance=global_efficiency_unpar)) %>%
-  `colnames<-`(c("NAME","VULNERABILITY")) %T>%
-  write.csv(.,file="Network-Data/USpower/data/vulnerability_uu.csv") %T>%
-  plot_uspower(uspower_uu,.$VULNERABILITY,function(x){10*x},file_name="vulnerability_uu")
+  `colnames<-`(c("NODE","vul_ge_uu")) %T>%
+  write.csv(.,file="Network-Data/USpower/data/vul_ge.csv") %T>%
+  plot_uspower(uspower_uu,.$VULNERABILITY,function(x){10*x},file_name="vul_ge_uu")
 
 
 # Calculating samples of network
 analyse_sample_performance(cl,uspower_uu,counter=100,sizes=seq.int(10,vcount(uspower),10)
                            , use_cluster = FALSE
                            , use_ego = TRUE
-                           , file_path = "Network-Data/USpower/pdf/ge_uu_sample_r"
-                           , netname = "USpower"
+                           , file_path = "Network-Data/USpower/pdf/vul_ge_uu_sample_r"
+                           , netname = "USpower - Unweighted"
                            , p_name = "Global Efficiency"
                            , performance = global_efficiency_unpar)
 
 analyse_sample_performance(cl,uspower_uu,counter=100,sizes=seq.int(1,40,1)
                            , use_cluster = TRUE
                            , use_ego = TRUE
-                           , file_path = "Network-Data/USpower/pdf/ge_uu_sample_ce"
-                           , netname = "USpower"
+                           , file_path = "Network-Data/USpower/pdf/vul_ge_uu_sample_ce"
+                           , netname = "USpower- Unweighted"
                            , p_name = "Global Efficiency"
                            , performance = global_efficiency_unpar)
 
 analyse_sample_performance(cl,uspower_uu,counter=100,sizes=seq.int(1,40,1)
                            , use_cluster = TRUE
                            , use_ego = FALSE
-                           , file_path = "Network-Data/USpower/pdf/ge_uu_sample_cu"
-                           , netname = "USpower"
+                           , file_path = "Network-Data/USpower/pdf/vul_ge_uu_sample_cu"
+                           , netname = "USpower- Unweighted"
                            , p_name = "Global Efficiency"
                            , performance = global_efficiency_unpar)
 

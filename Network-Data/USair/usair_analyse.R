@@ -34,7 +34,7 @@ vul_ge_suffix_names <- c("vul_ge_uu","vul_ge_du","vul_ge_uw","vul_ge_dw"
                          ,"vul_ge_uu_min","vul_ge_du_min","vul_ge_uw_min","vul_ge_dw_min"
                          ,"vul_ge_uu_sum","vul_ge_du_sum","vul_ge_uw_sum","vul_ge_dw_sum")
 vul_ge_usair <- matrix(0,nrow=vcount(usair_uu),ncol=(length(vul_ge_suffix_names)+1)) %>%
-  `colnames<-`(c("node",vul_ge_suffix_names)) %>%
+  `colnames<-`(c("NODE",vul_ge_suffix_names)) %>%
   as.data.frame()
 
 # Calculating, plotting and storing vulnerabilities
@@ -56,7 +56,7 @@ vul_ge_usair[,"vul_ge_du_min"] <- vulnerability_nodes(cl,usair_du,t=t_usair_du_m
 vul_ge_usair[,"vul_ge_uw_min"] <- vulnerability_nodes(cl,usair_uw,l=l_usair,t=t_usair_uw_min,performance=global_efficiency_unpar)
 vul_ge_usair[,"vul_ge_dw_min"] <- vulnerability_nodes(cl,usair_dw,l=l_usair,t=t_usair_dw_min,performance=global_efficiency_unpar)
 
-write.csv(vul_ge_usair,file="Network-Data/USair/data/vul_ge_usair.csv", row.names=FALSE)
+write.csv(vul_ge_usair,file="Network-Data/USair/data/vul_ge.csv", row.names=FALSE)
 
 # Plotting maps and histogram
 for (vul_ge_suffix in vul_ge_suffix_names){

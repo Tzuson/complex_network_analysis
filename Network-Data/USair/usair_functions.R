@@ -36,7 +36,7 @@ map_usair <- get_map(location = c(-120,50),zoom=3)
 #'   Furthermore, a histogram of the VALUE data is made, with binwidth
 #'   \code{max(nodes$VALUE)-min(nodes$VALUE)/100}.
 #'
-#' @param nodes A data frame with for every node a LONGITUDE, LATITUDE, SIZE and
+#' @param nodes A data frame with for every node a NODE, LONGITUDE, LATITUDE, SIZE and
 #'   VALUE parameter
 #' @param file_path A string giving the file path without file_name - optional -
 #' @param file_name A string giving the file name without extension - optional -
