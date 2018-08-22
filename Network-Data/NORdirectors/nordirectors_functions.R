@@ -1,7 +1,7 @@
 source("system/initialization.R")
 source("system/functions.R")
 
-#' @title Plot graph of NORdirectors
+#' @title Plot graph and histogram of NORdirectors
 #'
 #' @description Plots a graph of nordirectors, supplied with data on the nodes. This
 #'   data will be mapped to the size of the nodes, i.e. higher number for a node
