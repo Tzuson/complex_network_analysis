@@ -2,140 +2,146 @@ source("system/initialization.R")
 source("system/parallell_programming.R")
 source("system/functions.R")
 
-# Reading data into R
-flights <- read.csv("USAirnet/flight_data.csv",stringsAsFactors = FALSE)
-global_coordinates <- read.table("http://opsahl.co.uk/tnet/datasets/openflights_airports.txt"
-                                 ,stringsAsFactors = FALSE)
+# USair consists of US airports on the mainland, Alaska, Hawaï and Puerto Rico.
+# An edge is drawn if there was at least one passenger flown between these two
+# airports. Only the main cluster (measured from Atlanta airport and the edges
+# undirected) is used.
+# 
+# This network can be both directed and undirected, where
+# the undirected is the collapsed directed version. Weights, when used, are the
+# distances between airports in kilometers. The usage of edges are the total
+# number of passengers. Raw data from the U.S. Department of Transportation
+# (https://www.transtats.bts.gov/DL_SelectFields.asp?Table_ID=292), Geography =
+# all, Year = 2017, Period = All months.
 
-# Flights without passengers (cargo) are omitted
-passenger_flights <- flights[flights$PASSENGERS>0, ]
 
-# Only national flights, no border crossing
-passenger_flights <- filter(passenger_flights,ORIGIN_COUNTRY_NAME=="United States")
-passenger_flights <- filter(passenger_flights,DEST_COUNTRY_NAME=="United States")
+# First we make an edge list, useful for all our graphs
+edges_usair <- read.csv("Network-Data/USair/raw_data/flight_data.csv"
+                  , stringsAsFactors = FALSE) %>%
+  
+  # We only use passenger flights, so their should be at least one passenger,
+  # national airports and no self-loops
+  filter(PASSENGERS > 0
+         , ORIGIN_COUNTRY_NAME=="United States"
+         , DEST_COUNTRY_NAME=="United States"
+         , !(ORIGIN%in%c("ROR", "AWK", "TIQ", "UAM","PPG","JON"
+                         ,"OFU","TAV","FAQ","MDY","SAW","GUM"
+                         ,"ROP","SPN"))
+         , !(DEST%in%c("ROR", "AWK", "TIQ", "UAM","PPG","JON"
+                       ,"OFU","TAV","FAQ","MDY","SAW","GUM"
+                       ,"ROP","SPN"))
+         , ORIGIN!=DEST) %>%
+  
+  # Rest is not usefull anymore
+  select(PASSENGERS,ORIGIN,DEST) %>%
+  
+  # We want an edge list with origin - destination - #passengers between these airports
+  arrange(ORIGIN,DEST) %>%
+  group_by(ORIGIN,DEST) %>%
+  summarise(N_PASSENGERS = sum(PASSENGERS, na.rm = TRUE)) %>%
+  select(ORIGIN,DEST,N_PASSENGERS) %>%
+  `colnames<-`(c("FROM","TO","SIZE"))
 
-# No self-loops
-passenger_flights <- filter(passenger_flights,ORIGIN!=DEST)
-
-# List of airports
-airports_origin <- unique(passenger_flights$ORIGIN)
-airports_dest <- unique(passenger_flights$DEST)
-airports <- unique(c(airports_origin,airports_dest))
-
-# Edge list with passenger numbers
-edges_usairnet <- unique(passenger_flights[,c(4,8)])
-edges_usairnet["Passengers"] <- vector(mode="integer",length=length(edges_usairnet[,1]))
-edges_usairnet[["Passengers"]] <- vector(mode="integer",length=length(edges_usairnet[,1]))
-
-edges_usairnet[,3] <- parSapply(cl,1:length(edges_usairnet[,3]),function(pointer,passenger_flights,edges_usairnet){
-  unique_usairnet <- filter(passenger_flights, ORIGIN==edges_usairnet[pointer,1]&DEST==edges_usairnet[pointer,2])
-  passengers <- sum(unique_usairnet[,1])
-},passenger_flights,edges_usairnet)
+# Temporary list of airports
+nodes_from <- unique(edges_usair$FROM)
+nodes_to <- unique(edges_usair$TO)
+nodes_usair <- unique(c(nodes_from,nodes_to))
 
 # Initializing graph as directed
-usairnet_d <- graph_from_data_frame(passenger_flights[,c("ORIGIN","DEST")],directed=TRUE,airports)
+usair_du <- graph_from_data_frame(edges_usair[,c("FROM","TO")],directed=TRUE,nodes_usair)
 
-# Only use the main cluster
-usairnet_d <- induced_subgraph(usairnet_d,vids=ego(usairnet_d, order=10000,nodes=1)[[1]])
+# Only use the main cluster (measured from Atlanta)
+usair_du <- induced_subgraph(usair_du,vids=ego(usair_du, order=10000,nodes="ATL")[[1]])
+edges_usair <- filter(edges_usair, FROM%in%V(usair_du)$name, TO%in%V(usair_du)$name) %T>%
+  write.csv("Network-Data/USair/cooked_data/edges_usair.csv", row.names=FALSE)
 
-# Matrices from usairnet
-adj_usairnet_d <- as_adjacency_matrix(usairnet_d, type = "both", sparse=FALSE)
-l_usairnet <- parSapply(cl,V(usairnet_d),function(to,usairnet_d,global_coordinates){
-  row <- sapply(V(usairnet_d), function(from,to,usairnet_d,global_coordinates){
-    origin <- filter(global_coordinates, V5==V(usairnet_d)$name[from])
-    lat_origin <- as.double(origin[7])
-    lon_origin <- as.double(origin[8])
+# A list of nodes with their coordinates, where we only use the airports that
+# are in the graph. The following is included: AirportID (NODE), latitude
+# (LATITUDE), longitude (LONGITUDE) and number of passengers departing (SIZE)
+nodes_usair <- read.csv("Network-Data/USair/raw_data/us_coordinates.csv", stringsAsFactors = FALSE) %>%
+  filter(AIRPORT%in%V(usair_du)$name) %>%
+  select(AIRPORT,LATITUDE,LONGITUDE) %>%
+  group_by(AIRPORT) %>%
+  summarise(LATITUDE = mean(LATITUDE, na.rm = TRUE), LONGITUDE = mean(LONGITUDE, na.rm = TRUE)) %>%
+  left_join(summarise(group_by(edges_usair,FROM),USAGE = sum(USAGE)), by = c("AIRPORT" = "FROM")) %>%
+  `colnames<-`(c("NODE","LATITUDE","LONGITUDE","SIZE"))
+nodes_usair$SIZE[is.na(nodes_usair$SIZE)] <- 0
+write.csv(nodes_usair,"Network-Data/USair/cooked_data/nodes_usair.csv",row.names=FALSE)
+
+# Calculating matrices for usair 
+adj_usair_du <- as_adjacency_matrix(usair_du, type = "both", sparse=FALSE)
+write.csv(adj_usair_du,file="Network-Data/USair/cooked_data/adj_usair_du.csv",row.names=FALSE)
+
+l_usair <- parSapply(cl,V(usair_du),function(to,usair_du,us_coordinates){
+  row <- sapply(V(usair_du), function(from,to,usair_du,us_coordinates){
+    origin <- filter(nodes_usair, FROM==V(usair_du)$name[from])
+    lat_origin <- as.double(origin[1,"LATITUDE"])
+    lon_origin <- as.double(origin[1,"LONGITUDE"])
     
-    destination <- filter(global_coordinates, V5==V(usairnet_d)$name[to])
-    lat_destination <- as.double(destination[7])
-    lon_destination <- as.double(destination[8])
+    destination <- filter(nodes_usair, FROM==V(usair_du)$name[to])
+    lat_destination <- as.double(destination[1,"LATITUDE"])
+    lon_destination <- as.double(destination[1,"LONGITUDE"])
     
     distance <- coordinates2distance(lat_origin,lon_origin,lat_destination,lon_destination)
     return(distance)
-  },to,usairnet_d,global_coordinates)# sapply
+  },to,usair_du,nodes_usair)# sapply
   return(row)
-},usairnet_d,global_coordinates)# parSapply
+},usair_du,nodes_usair)# parSapply
+write.csv(l_usair,file="Network-Data/USair/cooked_data/l_usair.csv",row.names=FALSE)
 
-# There are airports we do not know the coordinates of
-airports_delete <- V(usairnet_d)[is.na(l_usairnet[,1])]
-
-adj_usairnet_d <- adj_usairnet_d[-airports_delete,-airports_delete]
-l_usairnet <- l_usairnet[-airports_delete,-airports_delete]
-edges_usairnet <- filter(edges_usairnet,ORIGIN%in%V(usairnet_d)$name)
-edges_usairnet <- filter(edges_usairnet,DEST%in%V(usairnet_d)$name)
-
-usairnet_d <- delete.vertices(usairnet_d,airports_delete)
-# usairnet_dw <- graph_from_adjacency_matrix(adj_usairnet_d*l_usairnet,mode="directed",weighted=TRUE)
-
-# Only use the main cluster
-airports_delete <- V(usairnet_d)[-ego(usairnet_d, order=10000,nodes=1)[[1]]]
-
-adj_usairnet_d <- adj_usairnet_d[-airports_delete,-airports_delete]
-l_usairnet <- l_usairnet[-airports_delete,-airports_delete]
-edges_usairnet <- filter(edges_usairnet,ORIGIN%in%row.names(l_usairnet))
-edges_usairnet <- filter(edges_usairnet,DEST%in%row.names(l_usairnet))
-
-
-usairnet_d <- delete.vertices(usairnet_d,airports_delete)
-usairnet_dw <- graph_from_adjacency_matrix(adj_usairnet_d*l_usairnet,mode="directed",weighted=TRUE)
-
-# Collapse networks to unweighted networks
-usairnet <- as.undirected(usairnet_d,mode="collapse")
-usairnet_w <- as.undirected(usairnet_dw,mode="collapse")
-
-# Making a transport matrix
-edges_usairnet <- edges_usairnet[-c(3157,3695),]
-w_usairnet <- l_usairnet - l_usairnet
-for (pointer in 1:length(edges_usairnet[,1])){
-  w_usairnet[edges_usairnet[pointer,1],edges_usairnet[pointer,2]] <- edges_usairnet[pointer,3]
+# Making a passenger matrix
+w_usair <- l_usair - l_usair
+for (pointer in 1:length(edges_usair[,"FROM"])){
+  w_usair[edges_usair[pointer,"FROM"],edges_usair[pointer,"TO"]] <- edges_usair[pointer,"SIZE"]
 }# for
+write.csv(w_usair,file="Network-Data/USair/cooked_data/w_usair.csv",row.names=FALSE)
+
+# Initiating the graphs
+usair_uu <- graph_from_adjacency_matrix(adj_usair_du,mode="max")
+usair_du <- graph_from_adjacency_matrix(adj_usair_du,mode="directed")
+usair_uw <- graph_from_adjacency_matrix(adj_usair_du*l_usair,mode="max",weighted=TRUE)
+usair_dw <- graph_from_adjacency_matrix(adj_usair_du*l_usair,mode="directed",weighted=TRUE)
+
+# We use two different approximations for the transport matrix
+t_usair_uu_sum <- transport_sum(cl,usair_uu,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_uu_sum.csv",row.names=FALSE)
+t_usair_du_sum <- transport_sum(cl,usair_du,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_du_sum.csv",row.names=FALSE)
+t_usair_uw_sum <- transport_sum(cl,usair_uw,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_uw_sum.csv",row.names=FALSE)
+t_usair_dw_sum <- transport_sum(cl,usair_dw,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_dw_sum.csv",row.names=FALSE)
+
+t_usair_uu_min <- transport_min(cl,usair_uu,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_uu_min.csv",row.names=FALSE)
+t_usair_du_min <- transport_min(cl,usair_du,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_du_min.csv",row.names=FALSE)
+t_usair_uw_min <- transport_min(cl,usair_uw,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_uw_min.csv",row.names=FALSE)
+t_usair_dw_min <- transport_min(cl,usair_dw,w_usair) %>%
+  `rownames<-`(rownames(l_usair)) %>%
+  `colnames<-`(colnames(l_usair)) %T>%
+  write.csv(file="Network-Data/USair/cooked_data/t_usair_dw_min.csv",row.names=FALSE)
 
 
-#' Plot graph of USAirnet
-#' 
-#' @param net A graph
-#' @param nodes Data on nodes - optional -
-#' @param edges Data on edges - optional -
-#' @param file_path A string name (without .pdf)
-#' @return A pdf with a plot of USAirnet
-plot_usairnet <- function(net, nodes=NULL, edges=NULL, file_path,name){
-  # Data is zero when missing
-  if (is.null(nodes)){
-    nodes <- vector(mode="numeric", length = vcount(net))
-    nodes <- nodes + 1
-  }# if
-  if (is.null(edges)){
-    edges <- vector(mode="numeric", length = ecount(net))
-    edges <- edges + 1
-  }# if
-  
-  # Plotting and storing image of USAirnet
-  file_name <- sprintf('%s_map.pdf',file_path)
-  pdf(file_name)
-  par(mar=rep(0,4),oma=rep(0,4))
-  plot(net,vertex.label=NA
-       , vertex.size=1 + nodes
-       , vertex.color="blue"
-       , edge.color="lightblue"
-       , edge.width=edges
-       , vertex.frame.color="darkblue"
-       , edge.arrow.size = 0.5
-       , main = sprintf('\n\n %s',name))
-  dev.off()
-  
-  # Plotting and storing histogram of USAirnet nodes data
-  file_name <- sprintf('%s_hist.pdf',file_path)
-  
-  pdf(file_name)
-  hist(nodes
-       , breaks=100
-       , xlab="Vulnerability (Binsize = 0.001)"
-       , ylab="Frequency"
-       , main=sprintf('\n Vulnerability of nodes of %s',name))
-  dev.off()
 
-  # Storing in .csv-file
-  file_name <- sprintf('%s.csv',file_path)
-  write.csv(nodes,file=file_name)
-  
-}# plot_usairnet
+
+
+
+
+
+
