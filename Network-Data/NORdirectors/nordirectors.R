@@ -11,6 +11,7 @@ edges_nordirectors <-  read.csv("Network-Data/NORdirectors/raw_data/nordirectors
 nordirectors_uu <-  as.matrix(edges_nordirectors) %>%
   graph_from_edgelist() %>%
   as.undirected(mode="collapse")
+V(nordirectors_uu)$name <- toString(1):toString(vcount(nordirectors_uu))
 
 # Taking largest cluster
 nordirectors_uu <- make_ego_graph(nordirectors_uu,order=10000,nodes=c(3),mode="all")[[1]]
