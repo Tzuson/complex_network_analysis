@@ -4,9 +4,10 @@ source("system/parallell_programming.R")
 
 #' @title Calculates distance between two geocoordinates
 #'
-#' @description Calculating distance in km between two points on earth as a
-#'   function of their geospatial coordinates using Haversine formula. Source:
-#'   https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+#' @description 
+#'  Calculating distance in km between two points on earth as a
+#'  function of their geospatial coordinates using Haversine formula. Source:
+#'  \href{stackoverflow}{https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula}
 #'
 #'
 #' @param lat1 Latitude degree of place 1
@@ -17,7 +18,7 @@ source("system/parallell_programming.R")
 #' @result Distance in kilometers
 #'
 #' @examples
-#' # Distance between Atlanta International airport and Denver International airport
+#' Distance between Atlanta International airport and Denver International airport
 #' coordinates2distance(33.64,-84.42,39.86,-104.67)
 #' # 2624.497
 coordinates2distance <- function(lat1,lon1,lat2,lon2){
@@ -55,10 +56,11 @@ deg2rad <- function(deg) {
 
 #' @title Renumbers the vertex numbers to vertex ID's
 #'
-#' @description When the vertices in an edge list are given as numbers,
-#'   \code{normalize_edgelist} will renumber them to make sure the vertex ID's
-#'   start with 1 and end with the number of vertices, leaving no unused ID's in
-#'   between.
+#' @description 
+#' When the vertices in an edge list are given as numbers,
+#' \code{normalize_edgelist} will renumber them to make sure the vertex ID's
+#' start with 1 and end with the number of vertices, leaving no unused ID's in
+#' between.
 #'
 #' @param edge_list An edge list, with columns 1 and 2 the columns with vertices
 #'   to be renumbered
@@ -124,7 +126,7 @@ normalize_edgelist <- function(edge_list){
 #' # [,2]   1    0    1
 #' # [,3]   1    0    0
 #' 
-#' @family transport_sum, transport_min
+#' @family transport 
 transport_sum <- function(cl,g,u_matrix){
   t_matrix <- parSapply(cl,1:vcount(g),function(origin,g,u_matrix){
     paths <- shortest_paths(g,from=origin,to=V(g),mode="out")$vpath
@@ -177,7 +179,7 @@ transport_sum <- function(cl,g,u_matrix){
 #' # [,2]   1    0    1
 #' # [,3]   0    0    0
 #' 
-#' @family transport_sum, transport_min
+#' @family transport
 transport_min <- function(cl,g,u_matrix){
   t_matrix <- parSapply(cl,1:vcount(g),function(origin,g,u_matrix){
     paths <- shortest_paths(g,from=origin,to=V(g),mode="out")$vpath

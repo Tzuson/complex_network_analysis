@@ -17,7 +17,7 @@ source("system/initialization.R")
 #'
 #' @details Always use stop_cluster when finished
 #' 
-#' @family start_cluster, stop_cluster
+#' @family cluster
 start_cluster <- function(n = parallel::detectCores()
                           , sources = c("system/initialization.R"
                                         , "system/functions.R"
@@ -48,7 +48,7 @@ start_cluster <- function(n = parallel::detectCores()
 #'
 #' @details Always use stop_cluster after finished with the cluster
 #' 
-#' @family start_cluster, stop_cluster
+#' @family cluster
 stop_cluster <- function(parallel_cluster){
   if(!is.null(parallel_cluster)) {
     stopCluster(parallel_cluster)
