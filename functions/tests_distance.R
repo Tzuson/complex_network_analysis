@@ -3,7 +3,7 @@ source("system/parallell_programming.R")
 source("system/functions.R")
 
 
-#' @title Network vulnerability per node, adjusted version of Gol'dshtein (2004) and 
+#' @title Network vulnerability per node, adjusted version of Gol'dshtein (2004) and
 #' Latora et al (2005)
 #'
 #' @description The vulnerability of a single node \code{node} in a network for

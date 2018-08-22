@@ -7,11 +7,11 @@ source("system/functions.R")
 #'   graphs
 #'
 #' @description The global efficiency is the normalized sum of the inverse
-#'   distances of every pair of nodes, where the normalization constant is
-#'   assumed to be the sum of inverse distances of every pair of nodes of a full
-#'   graph with the same number of nodes. In the case of an unweighted and
-#'   undirected/directed graph the normalization constant will simply be
-#'   \code{1/(n*(n-1))}, i.e. the number of non-self-loop edges.
+#'   distances of every pair of nodes, where the normalization constant is the
+#'   sum of inverse distances of every pair of nodes of a full graph with the
+#'   same number of nodes. In the case of an unweighted and undirected/directed
+#'   graph the normalization constant will simply be \code{1/(n*(n-1))}, i.e.
+#'   the number of non-self-loop edges.
 #'
 #'   This function calculates the distances matrix (from igraph) of the network
 #'   g row by row. It then sums over these rows, forgetting the row data itself.
@@ -59,10 +59,9 @@ global_efficiency <- function(cl,g){
 #' @title Efficiency of a graph, according to Latora (2001)
 #'
 #' @description The global efficiency is the normalized sum of the inverse
-#'   distances of every pair of nodes, where the normalization constant is
-#'   assumed to be the sum of inverse distances of every pair, multiplied with
-#'   the importance of this pair of nodes of a full graph with the same number
-#'   of nodes.
+#'   distances of every pair of nodes, where the normalization constant is the
+#'   sum of inverse distances of every pair, multiplied with the importance of
+#'   this pair of nodes of a full graph with the same number of nodes.
 #'
 #'   In the case of an unweighted and undirected/directed graph the
 #'   normalization constant will simply be \code{1/(n*(n-1))}, i.e. the number
@@ -131,7 +130,7 @@ global_efficiency <- function(cl,g){
 #' global_efficiency_unpar(g3,l3,t6)
 #' # 1
 #' 
-#' @family global_efficiency, global_efficiency_unpar, local_efficiency
+#' @family global_efficiency
 global_efficiency_unpar <- function(g,l=NULL,t=NULL){
   # Efficiency is zero when n<2
   n <- vcount(g)

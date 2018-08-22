@@ -5,27 +5,28 @@ source("system/functions.R")
 
 #' @title Calculates the performance of random subgraphs
 #'
-#' @description Calculates the performance of random subgraphs for different
-#'   number of nodes in the subgraph. If \code{use_cluster == FALSE}, then for
-#'   every \code{size} in \code{sizes} \code{size} different nodes are randomly
-#'   selected and the subgraph is made from these nodes and the edges between
-#'   these nodes.
+#' @description 
+#' Calculates the performance of random subgraphs for different number of
+#' nodes in the subgraph. If \code{use_cluster == FALSE}, then for every
+#' \code{size} in \code{sizes} \code{size} different nodes are randomly
+#' selected and the subgraph is made from these nodes and the edges between
+#' these nodes.
 #'
-#'   If \code{use_cluster == TRUE} a node is randomly selected and its
-#'   neighbourhood, of order \code{sizes} is used as sample. The starting node
-#'   itself is in the neighbourhood if \code{use_ego == TRUE}, otherwise it is
-#'   omitted.
+#' If \code{use_cluster == TRUE} a node is randomly selected and its
+#' neighbourhood, of order \code{sizes} is used as sample. The starting node
+#' itself is in the neighbourhood if \code{use_ego == TRUE}, otherwise it is
+#' omitted.
 #'
-#'   Nodes adjacent to the subgraph, but not part of the subgraph itself are
-#'   deleted, as well as the edges incidident in both the subgraph and its
-#'   complement.
+#' Nodes adjacent to the subgraph, but not part of the subgraph itself are
+#' deleted, as well as the edges incidident in both the subgraph and its
+#' complement.
 #'
 #' @param cl A cluster of computer kernels to be used for the calculation
 #' @param g An igraph  graph
 #' @param performance A function of \code{g},\code{l} and \code{t}
 #' @param counter An integer giving the number of samples/neighbourhoods to be
 #'   seen
-#' @param sizes An integer vector giving the different sizes for which shamples
+#' @param sizes An integer vector giving the different sizes for which samples
 #'   should be taken. If \code{use_cluster == TRUE}, then \code{sizes} gives the
 #'   order of the neighbourhoods, if \code{use_cluster == FALSE}, \code{sizes}
 #'   should give the number of nodes used in every sample.
@@ -37,8 +38,11 @@ source("system/functions.R")
 #'   TRUE}, else ignored. When \code{use_ego == TRUE}, the ego node itself is
 #'   part of the neighbourhood. If \code{use_ego == FALSE}, the ego node is
 #'   ommitted from the neighbourhood.
-#' @param l A length matrix - optional -
-#' @param t A transport matrix - optional -
+#' @param l A length matrix  (optional). A length matrix contains a physical
+#'   distance between all nodes, whether connected through the network or not.
+#' @param t A transport matrix (optional). A transport matrix contains for each
+#'   pair of nodes \eqn{i}, \eqn{j}, the amount transported from \eqn{i} to
+#'   \eqn{j}.
 #'
 #' @return A matrix of performances of random subgraphs, where the rows give the
 #'   sizes
@@ -63,7 +67,7 @@ source("system/functions.R")
 #' # [2,]   4    3    4    4    4    2    3    2    4     4
 #' # [3,]   4    5    3    5    5    6    3    3    4     6
 #' 
-#' @family sample_performance, analyse_sample_performance
+#' @family performance
 sample_performance <- function(cl,g,performance,counter,sizes,use_cluster=FALSE,use_ego=FALSE,l=NULL,t=NULL){
   # Calculating exact data of g
   n <- vcount(g)
@@ -98,19 +102,19 @@ sample_performance <- function(cl,g,performance,counter,sizes,use_cluster=FALSE,
 
 #' @title Wrapper and plotter for \code{sample_performance}
 #'
-#' @description Takes the matrix from \code{sample_performance} and turns it in
-#'   a plot. The x-axis gives the size of the sample, the y-axis the
-#'   performance. For every size a boxplot using ggplot2 is drawn given the
-#'   median, Q1, Q3 and outlying performances (outlying defined as lying further
-#'   that 1.5*distance(Q1,Q3) away from the median, in both directions). The
-#'   data is also stored in a .csv file in the same place with the same name.
+#' @description Takes the matrix from \code{sample_performance} and turns it
+#' into a plot. The x-axis gives the size of the sample, the y-axis the
+#' performance. For every size a boxplot using ggplot2 is drawn given the
+#' median, Q1, Q3 and outlying performances (outlying defined as lying further
+#' that 1.5*distance(Q1,Q3) away from the median, in both directions). The data
+#' is also stored in a .csv file in the same place with the same name.
 #'
 #' @param cl A cluster of computer kernels to be used for the calculation
 #' @param g An igraph  graph
 #' @param performance A function of \code{g},\code{l} and \code{t}
 #' @param counter An integer giving the number of samples/neighbourhoods to be
 #'   seen
-#' @param sizes An integer vector giving the different sizes for which shamples
+#' @param sizes An integer vector giving the different sizes for which samples
 #'   should be taken. If \code{use_cluster == TRUE}, then \code{sizes} gives the
 #'   order of the neighbourhoods, if \code{use_cluster == FALSE}, \code{sizes}
 #'   should give the number of nodes used in every sample.
