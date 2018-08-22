@@ -136,13 +136,8 @@ global_efficiency <- function(cl,g){
 #' t6 <- matrix(c(0,0,0,1,0,0,0,1,0),nrow=3,ncol=3)
 #' global_efficiency_unpar(g3,l3,t6)
 #' # 1
-<<<<<<< HEAD
-#'
-#' @family global_efficiency, global_efficiency_unpar, local_efficiency
-=======
 #' 
 #' @family global_efficiency
->>>>>>> e39a4f7330f9daad42ebcfd4362a99e0376b81bb
 global_efficiency_unpar <- function(g,l=NULL,t=NULL){
   # Efficiency is zero when n<2
   n <- vcount(g)
