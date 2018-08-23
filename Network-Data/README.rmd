@@ -1,0 +1,102 @@
+--- 
+title: "README Network-Data" 
+author: "M. G. Wellens" 
+date: "23 augustus 2018" 
+output: html_document 
+---
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(echo = TRUE) 
+```
+
+
+## Preambule
+
+ - File and object names are written as *my_object*. 
+ - If multiple variations for a given code exists, such as there are multiple files with the (partially) same name, we use *&lt; >*, e.g. *edges_&lt;name>.csv* is the edge list for a network with name *name* (thus *edges_&lt;name>.csv* --> *edges_usair.csv* in case of USair) 
+ 
+## Structure of directory
+
+The files in this map contain the data to generate networks with the igraph package. Each map contains four maps: 
+
++ *raw\_data*: Data directly from the source, as gotten from the source. If the source data is directly downloaded from a table on the internet, the download is put down here.
++ *cooked\_data*: Data derived from *raw\_data*, but not the final products. All data used to build networks are found here, such as node and edge lists or different matrices, like transport matrices. 
++ *data*: Final data, for example measures on the network itself, are stored here. This includes tables with vulnerabilities for a specific measure or other measurements on the network. 
++ *pdf*: PDF-files generated from *data* and/or possibly *cooked\_data*, such as graphs, plots and histograms of various variables. 
+
+There are also three files with R-code in each map (here ):
+
++ *&lt;name>\.R*: R script used to clean, wrangle and tidy the data from raw_data into usable network data, stored in cooked_data. It also includes code to calculate possible transport and distance matrices.
++ *&lt;name>\_analyse\.R*: R script used to calculate different variables from the network. It reads data from *cooked\_data* and writes it into *data* for *\.csv*-files and *pdf* for *\.pdf*-files. It may depend on *&lt;name>\_functions\.R*, but not on *&lt;name>\.R*.
++ *&lt;name>\_functions\.R*: R script with ancilliary functions, most often a plot function specificaly made for the network in question to plot vulnerabilities and/or sizes of the nodes nicely. It often contains a map for geoplots.
+
+## Structure of objects
+
+There are a couple standard objects that a network can have. Not every network has every object:
+
++ *&lt;name>\_&lt;x>&lt;y>*: The networks objects themselves. Thes objects are igraph graphs. 
+    1. Here *name* gives the name of the graph. This name is the same name as the map name, but in lower cases (where *\_time\_series* is written as *\_ts*). There are  
+    2. *x*: States if the graph is directed or not. If Undirected, it is *u*, if Directed it is *d*.
+    3. *y*: States if the graph is weighted or not. If Unweighted, it is *u*, if Weighted it is *w*.
+    
+   For example, the undirected, but weighted graph from USair is notated as *usair\_uw*. 
+   
++ *nodes\_&lt;name>*: The nodes list simply gives all the nodes in a network, for every node one row. The first column always is the *NODE* column, giving the names of the nodes. The following variables are seen:
+    1. *NODE*: Name of the node.
+    2. *LATITUDE* and *LONGITUDE*: Geospatial coordinates of the nodes, in decimals. 
+    3. *SIZE*: A "size" value of the nodes, for example the number of departures from an airport. Some plotting functions need this argument for the node sizes.
+    4. *VALUE*: Another variable. Often used for vulnerability measures. Often used by plotting functions giving a colour grading to the nodes.
++ *edges\_&lt;name>*: The edge list, with every row an edge. The first column *FROM* always gives the starting node of an edge, the second column *TO* gives the end node. The following variables occur:
+    1. *FROM*: Name of the starting node of the edge.
+    2. *TO*: Name of the end node of the edge.
+    3. *SIZE*: Size attribute of an edge, for example the number of emails send from *FROM* to *TO*. 
++ *l\_&lt;name>*: The length matrix. Row and column names are equal to the node names of the network. This metrix gives the "real life" distance between nodes, such as the distance in kilometers between any pair of stations in NLrail. Here, *name* gives the name of the network. 
++ *w\_&lt;name>*: The usage matrix of the edges. For every pair of nodes connected with an edge, it gives the amount of traffic on the edge. For pairs of nodes unconnected with an direct edge it is zero. There is no need to state if the network is undirected, because the matrix is then symmetric.
++ *t\_&lt;name>\_&lt;x>&lt;y>\_&lt;z>*: The transport matrix. It states the amount of "travel" between every two nodes in the network. For example, if there are ten passengers going from airport A, via airport B to airport C, the matrix only has one non-zero entry: *[A,C] = 10*. This matrix is depended on the direction and weight of the network, so the full graph name is used, not the shorter network name. Furthermore, this matrix is sometimes approximated from the usage matrix, in that case the name has a suffix stating the approximation function. The available functions are:
+
+    1. *transport\_sum*: The transport value is equal to the sum of usages along the edges in the shortest paths between two nodes. The suffix is *\_sum*.
+    2. *transport\_min*: The transport value is equal to the minimum of usages along the edges in the shortest paths between two nodes. The suffix is *\_min*.
+    
+   For example, the transport matrix of the unweighted and directed USair network, generated with *transport\_sum* is given by *t\_usair\_du\_sum*.
+
++ *names_&lt;name>*: A string vector with the names of the files containing the data for the different times of a time-dependent graph. 
+    
+In case of time series, we use the same naming conventions. However, the objects are not graphs, matrices or data frames anymore, but environments containing these objects. The names of the various objects are the names of the files. So, for example, the edge list of the fourth period of EUmail is given by *edges\_eumail\_ts[[edges\_eumail\_ts\_4]]*. 
+
+The general rules of thumb:
+
++ File, object and variable names are written in the same way: *&lt;type>\_&lt;name>*, where *type* give the oject, such as *t* for a transport matrix and *edges* for an edge list and *name* the name of the network, such as *usair*.
++ Variables containing data read directly from files (such as with *read\.csv\(\)*) have the same name as the files themselfs, without extension (e.g. *us_coordinates* comes from *us\_coordinates.csv*). Most often however, files are read and mutated into other forms with the pipe operators, omitting this data variable altogether.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
