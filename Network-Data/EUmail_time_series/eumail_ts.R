@@ -7,6 +7,7 @@ source("system/functions.R")
 # For more information, see
 # https://snap.stanford.edu/data/email-Eu-core-temporal.html.
 
+# Period length for one graph, in seconds. High period length means less graphs
 time_period <- 3600*24*30
 
 # Reading data into R, group it by TIME (with period is time_period) and count
