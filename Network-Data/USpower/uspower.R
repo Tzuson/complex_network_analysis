@@ -1,5 +1,5 @@
 source("system/initialization.R")
-source("system/parallell_programming.R")
+source("system/parallel_programming.R")
 source("system/functions.R")
 
 # This network it the network of 4941 electricity poles, houses etc of

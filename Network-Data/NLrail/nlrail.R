@@ -1,4 +1,5 @@
 source("system/initialization.R")
+source("system/parallel_programing.R")
 source("system/functions.R")
 
 # NLrail is a network with dutch train stations as nodes and the rail

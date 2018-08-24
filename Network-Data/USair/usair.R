@@ -1,5 +1,5 @@
 source("system/initialization.R")
-source("system/parallell_programming.R")
+source("system/parallel_programming.R")
 source("system/functions.R")
 
 # USair consists of US airports on the mainland, Alaska, Hawaï and Puerto Rico.

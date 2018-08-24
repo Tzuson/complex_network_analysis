@@ -1,5 +1,5 @@
 source("system/initialization.R")
-source("system/parallell_programming.R")
+source("system/parallel_programming.R")
 source("system/functions.R")
 
 # We use a simple function for loading, because all matrices are loaded in the same way

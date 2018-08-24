@@ -1,5 +1,5 @@
 source("system/initialization.R")
-source("system/parallell_programming.R")
+source("system/parallel_programming.R")
 source("system/functions.R")
 
 # EUmail_ts is a time series of EU mailing networks. The nodes are persones and

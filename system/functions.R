@@ -1,5 +1,5 @@
 source("system/initialization.R")
-source("system/parallell_programming.R")
+source("system/parallel_programming.R")
 
 
 #' @title Calculates distance between two geocoordinates

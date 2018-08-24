@@ -1,4 +1,5 @@
 source("system/initialization.R")
+source("system/parallel_programming.R")
 source("system/functions.R")
 
 #' @title Plot graph and histogram of NORdirectors

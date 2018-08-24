@@ -3,7 +3,10 @@ source("system/initialization.R")
 #' @title Starts a cluster of cores
 #'
 #' @description Convenience function to initialize a cluster with the maximum
-#'   number of cores and preload them with the scripts most often used
+#'   number of cores and preload them with the scripts most often used:
+#'    - system/initialization.R
+#'    - system/functions.R
+#'    - functions/measures_distance.R
 #'
 #' @param n A number of cores to be used (default = detectCores())
 #' @param sources A list of source directory strings of R scripts to be called
@@ -12,6 +15,9 @@ source("system/initialization.R")
 #' @return A cluster
 #'
 #' @examples
+#' # Initialize standard cluster
+#' cl <- start_cluster()
+#' 
 #' # Initializes a cluster of one core with the extra script of transport
 #' cl <- start_cluster(1,sources=c("system/initialization.R","system/functions.R","Models/Transport/transport.R"))
 #'

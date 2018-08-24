@@ -1,4 +1,5 @@
 source("system/initialization.R")
+source("system/parallel_programming.R")
 source("system/functions.R")
 
 # Reading data into R and making it an undirected graph
