@@ -80,7 +80,7 @@ source("system/functions.R")
 #' vulnerability_nodes(cl,g5,function(g,l,t){ecount(g)})
 #' # [1] 0.5 1.0 0.5
 #'
-#' @family vulnerability_nodes, vulnerability_edges
+#' @family vulnerability
 vulnerability_nodes <- function(cl,g,performance,l=NULL,t=NULL){
   # Data of whole graph
   n <- vcount(g)
@@ -174,7 +174,7 @@ vulnerability_nodes <- function(cl,g,performance,l=NULL,t=NULL){
 #' vulnerability_edges(cl,g5,function(g,l,t){ecount(g)})
 #' # [1] 0.5 0.5
 #'
-#' @family vulnerability_nodes, vulnerability_edges
+#' @family vulnerability
 vulnerability_edges <- function(cl,g,performance,l=NULL,t=NULL){
   # Calculating data on whole graph
   e <- ecount(g)
@@ -269,7 +269,7 @@ vulnerability_edges <- function(cl,g,performance,l=NULL,t=NULL){
 # #' vulnerability_edges(cl,g5,function(g,l,t){ecount(g)})
 # #' # [1] 0.5 0.5
 # #'
-# #' @family vulnerability_nodes, vulnerability_edges, vulnerability
+# #' @family vulnerability
 # vulnerability <- function(cl,g,performance,nodes,edges,l=NULL,t=NULL){
 #   # Edges from/to deleted nodes + edges to delete
 #   subedges_delete <- incident_edges(g1,nodes,mode="all")

@@ -10,8 +10,19 @@ output: html_document
 The files in this map contain the packages and basic function used in all other scripts. These are four scripts are:
 
 + *initialization\.R*: R script loading the required packages, with the most important being the *igraph*, *parallel* and *tidyverse* packages.
+
+    Packages included:
+    + Calculation: *igraph*, *parallel*, *doParallel*
+    + Data manipulation: *tidyverse*, *magrittr*
+    + Data import: *stringdist*, *rvest*, *xml2*, *tnet*
+    + Map plotting: *ggmap*, *mapproj*
+
 + *parallel\_programming\.R*: R script depending on *initialization\.R* containing two convencience functions, *start_cluster* and *stop_cluster*. These are used to initialize a cluster of cores with the right packages and most often used functions.
 
     NB: Altough this script only depends on *initialization\.R*, the *start_cluster* function will as default load *functions/measures\_distance\.R*. This can be overwritten by defining the scripts to load in the cluster yourself when calling *start\_cluster*.
   
 + *functions\.R*: R script depending on *initialization\.R* and *parallel\_programming.R* containing basic functions, such as calculating the distance between two points on earth from their geospational coordinates or approximating a transport matrix from a usage matrix. 
+
+    Functions: 
+    + *start_cluster*
+    + *stop_cluster* 

@@ -1,30 +1,50 @@
 ---
-title: "README"
+title: "README *functions*"
 author: "M. G. Wellens"
 date: "24 augustus 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
-## R Markdown
+## Structure of directory
+This folder contains the functions used to calculated different measures on networks. Every script depends on the files from *system*. The folder contains the following files:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
++ *analyse\.R*: R script containing functions to analyse the behaviour of measures and graphs when a subgraph is used instead of the full graph. Usefull for error analyses when measuring the effect of incomplete data.  
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+    Functions:
+    + *sample\_performance*: Simulates a number of random subgraphs of different sizes and calculates their performance. This function is parallellised.
+    + *analyse\_sample\_performance*: Wrapper of *sample_performance* that picks up the data, analyses it and plots it into multiplee boxplots showing the distributions of performance as a function of subgraph size. It also outputs a file with the raw data from *sample\_performance*. This function itself is not parallellised, but it uses the parallellisation of *sample\_performance* for speed.
+    
++ *measures\_distance\.R*: R script with measurements using a notion of distance in the graph. 
 
-```{r cars}
-summary(cars)
-```
+    Functions:
+    + *global\_efficiency*: Calculates global efficiency using parallel computing. It therefore needs a cluster (for example, from *start\_cluster*). Does not accept length and/or transport matrices.
+    + *global\_efficiency\_unpar*: Basics global efficiency function. It is not parallellised, but accepts length and/or transport matrices as optional arguments.
+    + *local\_efficency*: Basic local efficiency function. Calculates global efficiency of the n-th order neighbourhoods of every node. Accepts length and/or transport matrices.
+    
++ *measures\_topology\.R*: R script with measurements using only the topology of the graph, i.e. how nodes and edges are connected. The Kolmogorov complexity from *OACC* is loaded when this file is loaded. 
 
-## Including Plots
+    Functions: 
+    + *information\_content*: Calculates the *log2* of the number of automorphisms of the network, i.e. the *log2* of the number of permutations of nodes which keep the incidence structure intact (if A and B are connected/unconnected, then f(A) and f(B) are connected/unconnected).
+    + *kolmogorov*: Function to calculate an upper bound for the Kolmogorov complexity of a graph using the algorithm of *OACC*, possibly normalised using a constant. Basically a wrapper of the *bdm2D* function from *OACC* with a normalisation constant added.
+    + *kolmogorov_norm*: Simulates a number of Erdos-Renyi graphs to calculate the mean and standard deviation of their Kolmogorov complexity (using the *OACC* algorithm). Meant to be used in conjunction with *kolmogorov*, because the Kolmogorov complexity is highly dependent on the number of nodes and edges of a network. This function is parallellised.
 
-You can also embed plots, for example:
++ *OACC*: A directory containing an algorithm to calculate an upper bound of the Kolmogorov complexity of a graph. To load the algorithm, use 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+        setwd("functions/OACC");source("scripts/BDM2D\.R");setwd("\.\./\.\./"). 
+    
+    This algorithm is taken from 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+        + Soler-Toscano F., Zenil H., Delahaye J.-P. and Gauvrit N. (2014) Calculating Kolmogorov Complexity from the Output Frequency Distributions of Small Turing Machines. PLoS ONE 9(5): e96223.
+
+        + Gauvrit, N., Singmann H., Soler-Toscano F. and Zenil H.(2015) Algorithmic complexity for psychology: A user-friendly implementation of the coding theorem method, Behavior Research Methods, vol. 48, pp. 1–16.
+
+        + Zenil H., Soler-Toscano F., Kiani N.A., Hernández-Orozco S., Rueda-Toicen A. (2016) A Decomposition Method for Global Evaluation of Shannon Entropy and Local Estimations of Algorithmic Complexity, arXiv:1609.00110.
+
++ *README\.rmd*: A RMarkdown README file.
++ *test\_distance\.R*: R script with vulnerability tests using a measure on a graph. The vulnerability is calculated by *1-p'/p*, where *p* is the performance of whole network and *p'* the performance of the damaged network. 
+
+    Functions:
+    + *vulnerability\_nodes*: Calculates for every node the damage done on a graph by removing that node, where the damage is measured by a measure. Technically, the nodes itself are not deleted, only the edges that are coincent to the node (starting from/going to the node for directed graphs), so the damage done by not being able to go to that particular node is incorporated into the vulnerability. This function is parallellised.
+    + *vulnerability\_edges*: Calculates for every edge the damage done on a graph by remove that edge, where the damage is measured by a measure. Beware: Even relatively small graphs have a lot of edges (USair, with approx\. 1000 nodes, has approx\. 9000 edges), thus making this function costly. This function is parallellised.
+    + *vulnerability*: Outcommented function. It gives the vulnerability for a general nodes and edge list. Not tested. Use at your own risk.

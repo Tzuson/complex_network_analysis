@@ -5,26 +5,38 @@ date: "24 augustus 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+## Structure of directory 
 
-## R Markdown
+This directory contains three folders, a README and some files used by RStudio and Git:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
++ *system*: Folder containing containing the packages needed, some simple parallel programming functionality and a couple of basic functions. There are no dependencies on other folders. However, one function, *start\_cluster*, loads *functions/measures\_distance\.R* as one of its default scripts into the kernels making up the cluster.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+    Files:
+    + *functions\.R*: R script containing some basic functions.
+    + *initialization\.R*: R script loading the used packages.
+    + *parallel\_programming\.R* R script containg convencience functions for working with clusters of kernels.
+    + *README\.rmd*: A RMarkdown file containing more detailed information about the above files.
 
-```{r cars}
-summary(cars)
-```
++ *functions*: Folder containing the measures and tests using these measures. These scripts do depent on the files from *system*, but not on those from *Network-Data*. 
 
-## Including Plots
+    Files:
+    + *analyse\.R*: R script containing functions to analyse the effect of missing data on the performance of a graph.
+    + *measures\_distance\.R*: R script containing measures on graphs using a notion of distance, for example the number of edges between two nodes or a real life distance. 
+    + *measures\_topology\.R*: R script contaning measures on graphs using only the topology of the graphs, thus how the nodes are connected to each other. This file also contains a simple wrapper for an algorithm to calculate an upper bound for the Kolmogorov complexity. References for this algorithm are given in the README of *functions*.
+    + *OACC*: A folder containing an algorithm to calculate an upper bound for the Kolmogorov complexity. References can be found in the README of *functions*.
+    + "README.rmd": A RMarkdown file containing more detailed information about the above files.
+    + *test\_distance\.R*: R script containg functions to calculate the vulnerability of graphs under some kind of damage. Here different measures can be used to calculate the performance of the graph. 
 
-You can also embed plots, for example:
++ *Network-Data*: Folder containing different networks analysed using the measures from *functions*. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+    Files:
+    + *EUmail\_time\_series:* A folder containg a network of employees of an EU institute and the emails between them. The emails are time stamped, so that a time series of different graphs can be constructed. 
+    + *NLrail*: A folder containing a network of Dutch passenger train stations and the rail connections between them. This network has geospatial coordinates, but no usages.
+    + *NORdirectors*: A folder containing a network of directors of Norwegian companies and the connections of serving on the same boards between them. 
+    + *README\.rmd*: A RMarkdown file containg more detailed information about the format of the networks.
+    + *USair*: A folder containing a network of US airports and the passenger flight routes between them. This network contains geospatial coordinates and numbers of passengers on every routes.
+    + *USpower*: A folder containing a network of US electricity houses and poles, with powerline connections between them as edges.
+    
++ *README.rmd*: A RMarkdown file containing the information that you are now reading.
+    
+  

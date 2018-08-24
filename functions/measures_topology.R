@@ -33,7 +33,7 @@ information_content <- function(g){
 #'   intended constant to be used is that of kolmogorov_norm.
 #'
 #' @param g An igraph graph
-#' @param c_kolm A number to normalize the Kolmororov complexity
+#' @param c_kolm A number to normalize the Kolmororov complexity - optional -
 #' 
 #' @return The (normalized) Kolmogorov complexity
 #' 
@@ -44,18 +44,23 @@ information_content <- function(g){
 #' kolmogorov(g,kolmogorov_norm(cl,4,4,FALSE,1000)[1])
 #' # 1.044983 (for example)
 #'
-#' @details Bibliography Soler-Toscano F., Zenil H., Delahaye J.-P. and Gauvrit
-#' N. (2014) Calculating Kolmogorov Complexity from the Output Frequency
-#' Distributions of Small Turing Machines. PLoS ONE 9(5): e96223.
-#' Gauvrit, N., Singmann H., Soler-Toscano F. and Zenil H.(2015) Algorithmic
-#' complexity for psychology: A user-friendly implementation of the coding
-#' theorem method, Behavior Research Methods, vol. 48, pp. 1–16.
-#' Zenil H., Soler-Toscano F., Kiani N.A., Hernández-Orozco S., Rueda-Toicen A.
-#' (2016) A Decomposition Method for Global Evaluation of Shannon Entropy and
-#' Local Estimations of Algorithmic Complexity, arXiv:1609.00110.
+#' @details 
+#' Bibliography:
+#'  
+# Soler-Toscano F., Zenil H., Delahaye J.-P. and Gauvrit
+# N. (2014) Calculating Kolmogorov Complexity from the Output Frequency
+# Distributions of Small Turing Machines. PLoS ONE 9(5): e96223.
+# 
+# Gauvrit, N., Singmann H., Soler-Toscano F. and Zenil H.(2015) Algorithmic
+# complexity for psychology: A user-friendly implementation of the coding
+# theorem method, Behavior Research Methods, vol. 48, pp. 1–16.
+# 
+# Zenil H., Soler-Toscano F., Kiani N.A., Hernández-Orozco S., Rueda-Toicen A.
+# (2016) A Decomposition Method for Global Evaluation of Shannon Entropy and
+# Local Estimations of Algorithmic Complexity, arXiv:1609.00110.
 #' 
 #' @family kolmogorov, kolmogorov_norm
-kolmogorov <- function(g,c_kolm){
+kolmogorov <- function(g,c_kolm=1){
   M <- as_adjacency_matrix(g,type="both",sparse=FALSE)
   return(bdm2D(M,4,4)/c_kolm)
 }# kolmogorov
