@@ -2,6 +2,13 @@ source("system/initialization.R")
 source("system/parallel_programming.R")
 source("system/functions.R")
 
+# This network consists of directors of Norwegian companies and their
+# connections from serving on the same board. The network is undirected and
+# unweighted. Because of the large number of isolated and practically isolated
+# nodes, the main cluster is taken, deleting the other nodes. For more
+# information on the network, see
+# https://toreopsahl.com/datasets/#norwegianbod 
+
 # Reading data into R and making it an undirected graph
 edges_nordirectors <-  read.csv("Network-Data/NORdirectors/raw_data/nordirectorslist.csv"
                             ,stringsAsFactors = FALSE) %>% 
