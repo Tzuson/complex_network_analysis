@@ -14,4 +14,4 @@ The files in this map contain the packages and basic function used in all other 
 
     NB: Altough this script only depends on *initialization\.R*, the *start_cluster* function will as default load *functions/measures\_distance\.R*. This can be overwritten by defining the scripts to load in the cluster yourself when calling *start\_cluster*.
   
-+ *functions\.R*: R script depending on *initialization\.R* and *parallel\_programming.R* containing basic functions, such as calculating the distance between two points on earth from their geospational coordinates or approximating a transport matrix from an usage matrix. 
++ *functions\.R*: R script depending on *initialization\.R* and *parallel\_programming.R* containing basic functions, such as calculating the distance between two points on earth from their geospational coordinates or approximating a transport matrix from a usage matrix. 
