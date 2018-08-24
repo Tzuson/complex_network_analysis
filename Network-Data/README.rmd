@@ -23,13 +23,19 @@ The files in this map contain the data to generate networks with the igraph pack
 + *data*: Final data, for example measures on the network itself, are stored here. This includes tables with vulnerabilities for a specific measure or other measurements on the network. 
 + *pdf*: PDF-files generated from *data* and/or possibly *cooked\_data*, such as graphs, plots and histograms of various variables. 
 
-There are also three files with R-code in each map (here ):
+There are also four files in each map:
 
 + *&lt;name>\.R*: R script used to clean, wrangle and tidy the data from raw_data into usable network data, stored in cooked_data. It also includes code to calculate possible transport and distance matrices.
 + *&lt;name>\_analyse\.R*: R script used to calculate different variables from the network. It reads data from *cooked\_data* and writes it into *data* for *\.csv*-files and *pdf* for *\.pdf*-files. It may depend on *&lt;name>\_functions\.R*, but not on *&lt;name>\.R*.
 + *&lt;name>\_functions\.R*: R script with ancilliary functions, most often a plot function specificaly made for the network in question to plot vulnerabilities and/or sizes of the nodes nicely. It often contains a map for geoplots.
++ *README.rmd*: A RMarkdown README file containing information specific to that network.
 
 ## Structure of objects
+
+The general rules of thumb of naming objects and variables is as follows:
+
++ File, object and variable names are written in the same way: *&lt;type>\_&lt;name>*, where *type* give the oject, such as *t* for a transport matrix and *edges* for an edge list and *name* the name of the network, such as *usair*.
++ Variables containing data read directly from files (such as with *read\.csv\(\)*) have the same name as the files themselfs, without extension (e.g. *us_coordinates* comes from *us\_coordinates.csv*). Most often however, files are read and mutated into other forms with the pipe operators, omitting this data variable altogether.
 
 There are a couple standard objects that a network can have. Not every network has every object:
 
@@ -62,10 +68,7 @@ There are a couple standard objects that a network can have. Not every network h
     
 In case of time series, we use the same naming conventions. However, the objects are not graphs, matrices or data frames anymore, but environments containing these objects. The names of the various objects are the names of the files. So, for example, the edge list of the fourth period of EUmail is given by *edges\_eumail\_ts[[edges\_eumail\_ts\_4]]*. 
 
-The general rules of thumb:
 
-+ File, object and variable names are written in the same way: *&lt;type>\_&lt;name>*, where *type* give the oject, such as *t* for a transport matrix and *edges* for an edge list and *name* the name of the network, such as *usair*.
-+ Variables containing data read directly from files (such as with *read\.csv\(\)*) have the same name as the files themselfs, without extension (e.g. *us_coordinates* comes from *us\_coordinates.csv*). Most often however, files are read and mutated into other forms with the pipe operators, omitting this data variable altogether.
 
 
 

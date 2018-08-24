@@ -144,15 +144,21 @@ $(document).ready(function () {
 <li><em>data</em>: Final data, for example measures on the network itself, are stored here. This includes tables with vulnerabilities for a specific measure or other measurements on the network.</li>
 <li><em>pdf</em>: PDF-files generated from <em>data</em> and/or possibly <em>cooked_data</em>, such as graphs, plots and histograms of various variables.</li>
 </ul>
-<p>There are also three files with R-code in each map (here ):</p>
+<p>There are also four files in each map:</p>
 <ul>
 <li><em>&lt;name&gt;.R</em>: R script used to clean, wrangle and tidy the data from raw_data into usable network data, stored in cooked_data. It also includes code to calculate possible transport and distance matrices.</li>
 <li><em>&lt;name&gt;_analyse.R</em>: R script used to calculate different variables from the network. It reads data from <em>cooked_data</em> and writes it into <em>data</em> for <em>.csv</em>-files and <em>pdf</em> for <em>.pdf</em>-files. It may depend on <em>&lt;name&gt;_functions.R</em>, but not on <em>&lt;name&gt;.R</em>.</li>
 <li><em>&lt;name&gt;_functions.R</em>: R script with ancilliary functions, most often a plot function specificaly made for the network in question to plot vulnerabilities and/or sizes of the nodes nicely. It often contains a map for geoplots.</li>
+<li><em>README.rmd</em>: A RMarkdown README file containing information specific to that network.</li>
 </ul>
 </div>
 <div id="structure-of-objects" class="section level2">
 <h2>Structure of objects</h2>
+<p>The general rules of thumb of naming objects and variables is as follows:</p>
+<ul>
+<li>File, object and variable names are written in the same way: <em>&lt;type&gt;_&lt;name&gt;</em>, where <em>type</em> give the oject, such as <em>t</em> for a transport matrix and <em>edges</em> for an edge list and <em>name</em> the name of the network, such as <em>usair</em>.</li>
+<li>Variables containing data read directly from files (such as with <em>read.csv()</em>) have the same name as the files themselfs, without extension (e.g. <em>us_coordinates</em> comes from <em>us_coordinates.csv</em>). Most often however, files are read and mutated into other forms with the pipe operators, omitting this data variable altogether.</li>
+</ul>
 <p>There are a couple standard objects that a network can have. Not every network has every object:</p>
 <ul>
 <li><em>&lt;name&gt;_&lt;x&gt;&lt;y&gt;</em>: The networks objects themselves. Thes objects are igraph graphs.
@@ -191,11 +197,6 @@ $(document).ready(function () {
 <li><em>names_&lt;name&gt;</em>: A string vector with the names of the files containing the data for the different times of a time-dependent graph.</li>
 </ul>
 <p>In case of time series, we use the same naming conventions. However, the objects are not graphs, matrices or data frames anymore, but environments containing these objects. The names of the various objects are the names of the files. So, for example, the edge list of the fourth period of EUmail is given by <em>edges_eumail_ts[[edges_eumail_ts_4]]</em>.</p>
-<p>The general rules of thumb:</p>
-<ul>
-<li>File, object and variable names are written in the same way: <em>&lt;type&gt;_&lt;name&gt;</em>, where <em>type</em> give the oject, such as <em>t</em> for a transport matrix and <em>edges</em> for an edge list and <em>name</em> the name of the network, such as <em>usair</em>.</li>
-<li>Variables containing data read directly from files (such as with <em>read.csv()</em>) have the same name as the files themselfs, without extension (e.g. <em>us_coordinates</em> comes from <em>us_coordinates.csv</em>). Most often however, files are read and mutated into other forms with the pipe operators, omitting this data variable altogether.</li>
-</ul>
 </div>
 
 
