@@ -36,6 +36,7 @@ This directory contains three folders, a README and some files used by RStudio a
     + *README\.rmd*: A RMarkdown file containg more detailed information about the format of the networks.
     + *USair*: A folder containing a network of US airports and the passenger flight routes between them. This network contains geospatial coordinates and numbers of passengers on every routes.
     + *USpower*: A folder containing a network of US electricity houses and poles, with powerline connections between them as edges.
+    + *USair\_time\_series*: A folder containing a time series variant of USair. Caution: Work In Progress.
     
 + *README.rmd*: A RMarkdown file containing the information that you are now reading.
     

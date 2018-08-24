@@ -48,3 +48,23 @@ This folder contains the functions used to calculated different measures on netw
     + *vulnerability\_nodes*: Calculates for every node the damage done on a graph by removing that node, where the damage is measured by a measure. Technically, the nodes itself are not deleted, only the edges that are coincent to the node (starting from/going to the node for directed graphs), so the damage done by not being able to go to that particular node is incorporated into the vulnerability. This function is parallellised.
     + *vulnerability\_edges*: Calculates for every edge the damage done on a graph by remove that edge, where the damage is measured by a measure. Beware: Even relatively small graphs have a lot of edges (USair, with approx\. 1000 nodes, has approx\. 9000 edges), thus making this function costly. This function is parallellised.
     + *vulnerability*: Outcommented function. It gives the vulnerability for a general nodes and edge list. Not tested. Use at your own risk.
+    
+## Structure of objects
+There are a couple of recurring objects in these scripts. Here they are described (for the full list of variables, look at the documentation of the functions themselfs):
+
++ *cl*: A cluster of computer kernels where the calculation should be done. Easiest choice is to initialize a cluster at the start of a session with *start\_cluster* from *system*. The kernels should be loaded with the functions, methods and variables that are used in the calculation. The defaults of *start\_cluster* are enough for the calculations in *functions*.
++ *g*: An igraph graph object. If a *l\_matrix* is used, the edges should have weights on them, otherwise weights of 1 are used.
++ *l*: A length matrix of size *n \* n*, with *n* the number of nodes of *g*. It gives for every pair of nodes their real life distance. Only the diagonal entries should be zero.
++ *t*: A transport matrix of size *n \* n*, with *n* the number of nodes of *g*. This matrix gives the amount of "traffic" from one node to another. For example, if ten passengers want to go from airport A to C and they need to go via B, the *t* matrix will be a three-by-three matrix containing zeros everywhere, except at the *[A,B]* entry, there it would be ten.
++ *performance*: A function of *g*, *l* and *t*, where the last two may be ignored, but should be accepted, that gives a form of measurement or fitness of the graph. Most often measures from *measures\_distance\.R* are used, but others are possible too. 
+
+
+
+
+
+
+
+
+
+
+

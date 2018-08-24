@@ -170,6 +170,17 @@ Functions:
 </ul></li>
 </ul>
 </div>
+<div id="structure-of-objects" class="section level2">
+<h2>Structure of objects</h2>
+<p>There are a couple of recurring objects in these scripts. Here they are described (for the full list of variables, look at the documentation of the functions themselfs):</p>
+<ul>
+<li><em>cl</em>: A cluster of computer kernels where the calculation should be done. Easiest choice is to initialize a cluster at the start of a session with <em>start_cluster</em> from <em>system</em>. The kernels should be loaded with the functions, methods and variables that are used in the calculation. The defaults of <em>start_cluster</em> are enough for the calculations in <em>functions</em>.</li>
+<li><em>g</em>: An igraph graph object. If a <em>l_matrix</em> is used, the edges should have weights on them, otherwise weights of 1 are used.</li>
+<li><em>l</em>: A length matrix of size <em>n * n</em>, with <em>n</em> the number of nodes of <em>g</em>. It gives for every pair of nodes their real life distance. Only the diagonal entries should be zero.</li>
+<li><em>t</em>: A transport matrix of size <em>n * n</em>, with <em>n</em> the number of nodes of <em>g</em>. This matrix gives the amount of “traffic” from one node to another. For example, if ten passengers want to go from airport A to C and they need to go via B, the <em>t</em> matrix will be a three-by-three matrix containing zeros everywhere, except at the <em>[A,B]</em> entry, there it would be ten.</li>
+<li><em>performance</em>: A function of <em>g</em>, <em>l</em> and <em>t</em>, where the last two may be ignored, but should be accepted, that gives a form of measurement or fitness of the graph. Most often measures from <em>measures_distance.R</em> are used, but others are possible too.</li>
+</ul>
+</div>
 
 
 

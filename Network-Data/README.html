@@ -137,19 +137,30 @@ $(document).ready(function () {
 </div>
 <div id="structure-of-directory" class="section level2">
 <h2>Structure of directory</h2>
-<p>The files in this map contain the data to generate networks with the igraph package. Each map contains four maps:</p>
+<p>This folder consists of six networks, with two of them being time series. The following networks are included (sources of data are in the <em>&lt;name&gt;.R</em> files):</p>
+<ul>
+<li><em>EUmail_time_series</em>: A network with the nodes being employees of an anonymous EU institute, the edges emails between them. Edges are time stamped, so that the network can be split in different graphs, where the edges mean there is an email connection between two employees. The edges can be defined as weighted and or directed, but the default is undirected and unweighted.</li>
+<li><em>NLrail</em>: A network with the nodes being the passenger train stations and the edges rail connections between them. The nodes have geospatial coordinates and are named. The edges are not directed, but weighted (because of the geospatial coordinates of the nodes).</li>
+<li><em>NORdirectors</em>: A network with the nodes being directors of Norwegian companies and edges the connections betweem these directors by serving on the same board. This network is not directed and not weighted. Furthermore, because of a large number of directors only serving on one board, only the main cluster is used.</li>
+<li><em>USair</em>: A network with the nodes being the US airports, the edges being served passenger routes between them. Geospatial coordinates are available of the nodes, as well as number of departures. For the edges the weight (from the geospatial coordinates) and number of passengers using the routes are known, as well as the directions in which the passengers go. Here too the main cluster of airports, measured from Atlanta International Airport and calculated from the undirected graph, is used due to the large number of (very) small airports. The data is from 2017.</li>
+<li><em>USair_time_series</em>: Almost the same network as <em>USair</em>, however over multiple years (1993-2017), so a time series can be made. For plotting convencience and to illustrate the time better, airports from Alaska, Hawaï and the pacific territories like Guam are omitted.</li>
+<li><em>USpower</em>: A network consisting of the power grid of west America. The nodes are electricity houses and poles and the edges are the lines between them. This network is not directed and not weighted.</li>
+</ul>
+</div>
+<div id="structure-of-network-directory" class="section level2">
+<h2>Structure of network directory</h2>
+<p>The files in this directory contain the data to generate networks with the igraph package. Each map contains four maps:</p>
 <ul>
 <li><em>raw_data</em>: Data directly from the source, as gotten from the source. If the source data is directly downloaded from a table on the internet, the download is put down here.</li>
 <li><em>cooked_data</em>: Data derived from <em>raw_data</em>, but not the final products. All data used to build networks are found here, such as node and edge lists or different matrices, like transport matrices.</li>
 <li><em>data</em>: Final data, for example measures on the network itself, are stored here. This includes tables with vulnerabilities for a specific measure or other measurements on the network.</li>
 <li><em>pdf</em>: PDF-files generated from <em>data</em> and/or possibly <em>cooked_data</em>, such as graphs, plots and histograms of various variables.</li>
 </ul>
-<p>There are also four files in each map:</p>
+<p>There are also three files in each map:</p>
 <ul>
 <li><em>&lt;name&gt;.R</em>: R script used to clean, wrangle and tidy the data from raw_data into usable network data, stored in cooked_data. It also includes code to calculate possible transport and distance matrices.</li>
 <li><em>&lt;name&gt;_analyse.R</em>: R script used to calculate different variables from the network. It reads data from <em>cooked_data</em> and writes it into <em>data</em> for <em>.csv</em>-files and <em>pdf</em> for <em>.pdf</em>-files. It may depend on <em>&lt;name&gt;_functions.R</em>, but not on <em>&lt;name&gt;.R</em>.</li>
 <li><em>&lt;name&gt;_functions.R</em>: R script with ancilliary functions, most often a plot function specificaly made for the network in question to plot vulnerabilities and/or sizes of the nodes nicely. It often contains a map for geoplots.</li>
-<li><em>README.rmd</em>: A RMarkdown README file containing information specific to that network.</li>
 </ul>
 </div>
 <div id="structure-of-objects" class="section level2">
