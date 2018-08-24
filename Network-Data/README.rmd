@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
  
 ## Structure of directory
 
-The files in this map contain the data to generate networks with the igraph package. Each map contains four maps: 
+The files in this directory contain the data to generate networks with the igraph package. Each map contains four maps: 
 
 + *raw\_data*: Data directly from the source, as gotten from the source. If the source data is directly downloaded from a table on the internet, the download is put down here.
 + *cooked\_data*: Data derived from *raw\_data*, but not the final products. All data used to build networks are found here, such as node and edge lists or different matrices, like transport matrices. 
